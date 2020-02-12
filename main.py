@@ -11,7 +11,7 @@ def get_symbols():
     global ticker_list , buy_price_list, buy_count_list
     global datacsv
     colnames = ['SYMBOL', 'BUY_PRICE', 'COUNT']
-    datacsv = pd.read_csv('stocks.csv', names=colnames, header=1)
+    datacsv = pd.read_csv('stocks.csv', names=colnames, header=0)
     # Stock names 
     ticker_list = datacsv.SYMBOL.tolist()
     buy_price_list= datacsv.BUY_PRICE.tolist()
@@ -46,9 +46,18 @@ def slice_data():
         first_symbol_data = list( df.columns.values)
         symbol = first_symbol_data[0][0]
 
-        print(symbol,",",lookup_cost(symbol),",",lookup_count(symbol))
+        # print(symbol,",",lookup_cost(symbol),",",lookup_count(symbol))
+        # add new colummns in DF
+        # print(df.columns.values[3])
+        buy_cost= lookup_cost(symbol)
+        buy_count =lookup_count(symbol)
+        total_cost = buy_cost * buy_count
+        tot_curr_cost = df[df.columns.values[3]] * buy_count
+        df['GAIN_LOSS']= df[df.columns.values[3]] - buy_cost
+        df['TOT_GAIN_LOSS']=  tot_curr_cost - (buy_cost*buy_count)
+        
         df_list.append(df)
-        # print(df)
+        print(df)
         col_start = col_start+5
 
     # print(first_symbol_data.iloc[0:0,0:1])
